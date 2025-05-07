@@ -3,7 +3,7 @@
 #include <iomanip>
 using namespace std;
 
-const int N = 8;
+const int N = 16;
 bool encontrado = false; 
 int solucion[N][N];
 
@@ -12,7 +12,7 @@ void procesarSolucion(int tablero[N][N]) {
     for (int i = 0; i < N; ++i) {
         sol = 'A' + i;
         for (int j = 0; j < N; ++j) {
-            cout << (tablero[i][j] == 1 ? sol : ". ");
+            cout << (tablero[i][j] == 1 ? sol+' ' : ". ");
         }
         cout << endl;
     }
@@ -126,7 +126,7 @@ int main() {
     auto fin = chrono::high_resolution_clock::now();
 
     auto duracion = chrono::duration_cast<chrono::microseconds>(fin - inicio);
-    double tiempo = duracion.count() / 1000.0;  // Convertir a milisegundos
+    double tiempo = duracion.count() / 1000.0;  
 
     if (encontrado) {
         procesarSolucion(solucion);
