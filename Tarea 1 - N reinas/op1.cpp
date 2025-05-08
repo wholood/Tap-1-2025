@@ -1,9 +1,10 @@
 #include <iostream>
-#include <chrono>
+#include "stopWatch.hpp"
 #include <iomanip>
 using namespace std;
 
 const int N = 8;
+const int iteraciones = 10;
 bool encontrado = false; 
 int solucion[N][N];
 
@@ -12,7 +13,7 @@ void procesarSolucion(int tablero[N][N]) {
     for (int i = 0; i < N; ++i) {
         sol = 'A' + i;
         for (int j = 0; j < N; ++j) {
-            cout << (tablero[i][j] == 1 ? sol : ". ");
+            cout << (tablero[i][j] == 1 ? sol+' ' : ". ");
         }
         cout << endl;
     }
@@ -121,20 +122,31 @@ void reinas(int fila, int tablero[N][N]) {
 int main() {
     int tablero[N][N] = {0};
 
-    auto inicio = chrono::high_resolution_clock::now();
-    reinas(0, tablero);
-    auto fin = chrono::high_resolution_clock::now();
+    double tiemposMili=0;
+    double tiemposMicro=0;
 
-    auto duracion = chrono::duration_cast<chrono::microseconds>(fin - inicio);
-    double tiempo = duracion.count() / 1000.0;  // Convertir a milisegundos
+    for (int i = 0; i < iteraciones; ++i) {
+        encontrado = false;
+        for (int j = 0; j < N; ++j) {
+            for (int k = 0; k < N; ++k) {
+                tablero[j][k] = 0;
+            }
+        }
 
-    if (encontrado) {
-        procesarSolucion(solucion);
+        auto watchIter = StopWatch::start();
+        reinas(0, tablero);
+        auto timeIter = watchIter.stop();
+
+        if (encontrado) procesarSolucion(solucion);
+        tiemposMili += timeIter.getElapsedTimeMiliSeconds();
+        tiemposMicro += timeIter.getElapsedTimeMicroSeconds();
     }
 
-    // Configurar salida para mostrar decimales
-    cout << fixed << setprecision(6);
-    cout << "Tiempo de ejecución: " << tiempo << " ms" << endl;
+    cout << fixed << setprecision(9);
+    cout << "Tiempo promedio en milisegundos:" << tiemposMili / iteraciones << endl;
+
+    cout << "Tiempos promedio en microsegundos:" << tiemposMicro / iteraciones << endl;
+    
     
     return 0;
 }
