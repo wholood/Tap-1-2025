@@ -1,9 +1,11 @@
 #include <iostream>
-#include <chrono>
+#include "stopWatch.hpp"
 #include <iomanip>
+
 using namespace std;
 
-const int N = 16; 
+const int N = 8; 
+const int iteraciones = 10;
 int solucion[N];   
 bool encontrado = false;
 
@@ -54,21 +56,29 @@ void permutacion(int paso, int A[]) {
 
 int main() {
     int columnas[N];
-    for(int i = 0; i < N; i++) columnas[i] = i;
-    
-    auto inicio = chrono::high_resolution_clock::now();
-    permutacion(0, columnas);
-    auto fin = chrono::high_resolution_clock::now();
-    
-    auto duracion = chrono::duration_cast<chrono::microseconds>(fin - inicio);
-    double tiempo = duracion.count() / 1000.0; 
-    
-    if(encontrado) {
-        imprimirSolucion(solucion);
+    double tiemposMili=0;
+    double tiemposMicro=0;
+
+    for (int i = 0; i < iteraciones; ++i) {
+        encontrado = false;
+        for(int i = 0; i < N; i++) columnas[i] = i;
+
+        auto watchIter = StopWatch::start();
+        permutacion(0, columnas);
+        auto timeIter = watchIter.stop();
+
+        //if (encontrado) imprimirSolucion(solucion);
+        tiemposMili += timeIter.getElapsedTimeMiliSeconds();
+        tiemposMicro += timeIter.getElapsedTimeMicroSeconds();
     }
+
+    cout << fixed << setprecision(9);
+
+    cout << "Cantidad de reinas: " << N << endl;
+    cout << "Cantidad de iteraciones: " << iteraciones << endl;
+    cout << "Tiempo promedio en milisegundos:" << tiemposMili / iteraciones << endl;
+    cout << "Tiempos promedio en microsegundos:" << tiemposMicro / iteraciones << endl;
     
-    cout << fixed << setprecision(6);
-    cout << "Tiempo de ejecucion: " << tiempo << " ms" << endl;
     
     return 0;
 }
