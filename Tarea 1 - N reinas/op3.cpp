@@ -1,12 +1,16 @@
 #include <iostream>
 #include "stopWatch.hpp"
 #include <iomanip>
+#include <vector>
+#include <algorithm>
+#include <random>
 using namespace std;
 
 const int N = 64;
-const int iteraciones = 1;
+const int iteraciones = 2;
 bool encontrado = false; 
 int solucion[N][N];
+int soluciones = 0;
 
 void procesarSolucion(int tablero[N][N]) {
     string sol;
@@ -88,7 +92,6 @@ void reinas(int fila, int tablero[N][N]) {
     if (encontrado) return;
     
     if (fila == N) {
-        // Guarda solución
         for (int i = 0; i < N; ++i) {
             for (int j = 0; j < N; ++j) {
                 solucion[i][j] = tablero[i][j];
@@ -97,12 +100,26 @@ void reinas(int fila, int tablero[N][N]) {
         encontrado = true;
         return;
     }
-
+    
+    vector<int> columnas;
     for (int col = 0; col < N; ++col) {
+        if (rand() % 100 < 30) {
+            columnas.push_back(col);
+        }
+    }
+    if (columnas.empty()) {
+        columnas.push_back(rand() % N);
+    }
+
+    //Permitir revisar una secuencia aleatoria de columnas, no necesariamente 2,4,5 si no probar una permutación aleatoria.
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::shuffle(columnas.begin(), columnas.end(), gen);
+
+    for (int col : columnas) {
         if (tablero[fila][col] == 0) {
             int id = fila + 2;
             
-            // Marcar zonas
             marcarColumna(col, fila, id, tablero);
             marcarDiagonalIzquierda(fila, col, id, tablero);
             marcarDiagonalDerecha(fila, col, id, tablero);
@@ -110,7 +127,6 @@ void reinas(int fila, int tablero[N][N]) {
             
             reinas(fila + 1, tablero);
             
-            // Desmarcar
             desmarcarColumna(col, fila, id, tablero);
             desmarcarDiagonalIzquierda(fila, col, id, tablero);
             desmarcarDiagonalDerecha(fila, col, id, tablero);
@@ -120,13 +136,15 @@ void reinas(int fila, int tablero[N][N]) {
 }
 
 int main() {
-    int tablero[N][N] = {0};
+    srand(time(0)); // Semilla para números aleatorios
 
+    int tablero[N][N] = {0};
     double tiemposMili=0;
     double tiemposMicro=0;
 
     for (int i = 0; i < iteraciones; ++i) {
         encontrado = false;
+        // Reiniciar tablero
         for (int j = 0; j < N; ++j) {
             for (int k = 0; k < N; ++k) {
                 tablero[j][k] = 0;
@@ -137,17 +155,24 @@ int main() {
         reinas(0, tablero);
         auto timeIter = watchIter.stop();
 
-        if (encontrado) procesarSolucion(solucion);
-        tiemposMili += timeIter.getElapsedTimeMiliSeconds();
-        tiemposMicro += timeIter.getElapsedTimeMicroSeconds();
+        if (encontrado){
+            procesarSolucion(solucion);
+            tiemposMili += timeIter.getElapsedTimeMiliSeconds();
+            tiemposMicro += timeIter.getElapsedTimeMicroSeconds();
+            soluciones++;
+        } 
+        else {
+            cout << "No se encontró solución." << endl;
+        }
+        
     }
 
     cout << fixed << setprecision(9);
     cout << "Cantidad de reinas: " << N << endl;
     cout << "Cantidad de iteraciones: " << iteraciones << endl;
-    cout << "Tiempo promedio en milisegundos:" << tiemposMili / iteraciones << endl;
-    cout << "Tiempos promedio en microsegundos:" << tiemposMicro / iteraciones << endl;
-    
+    cout << "Cantidad de soluciones encontradas: " << soluciones << endl;
+    cout << "Tiempo promedio en milisegundos:" << tiemposMili / soluciones << endl;
+    cout << "Tiempo promedio en microsegundos:" << tiemposMicro / soluciones << endl;
     
     return 0;
 }
