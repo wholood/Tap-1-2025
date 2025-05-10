@@ -4,8 +4,8 @@
 
 using namespace std;
 
-const int N = 8; 
-const int iteraciones = 10;
+const int N = 64; 
+const int iteraciones = 1;
 int solucion[N];   
 bool encontrado = false;
 
@@ -67,7 +67,7 @@ int main() {
         permutacion(0, columnas);
         auto timeIter = watchIter.stop();
 
-        //if (encontrado) imprimirSolucion(solucion);
+        if (encontrado) imprimirSolucion(solucion);
         tiemposMili += timeIter.getElapsedTimeMiliSeconds();
         tiemposMicro += timeIter.getElapsedTimeMicroSeconds();
     }
