@@ -3,6 +3,8 @@
         "iostream": "cpp",
         "chrono": "cpp",
         "type_traits": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "vector": "cpp",
+        "random": "cpp"
     }
 }
