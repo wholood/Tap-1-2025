@@ -1,0 +1,75 @@
+======Experimento 1: Inserciones.
+
+Para M=100
+Tiempo total= 27 microsegundos
+Tiempo promedio por insercion= 0.27 microsegundos.
+----------------------------------
+
+Para M=1000
+Tiempo total= 175 microsegundos
+Tiempo promedio por insercion= 0.175 microsegundos.
+----------------------------------
+
+Para M=10000
+Tiempo total= 1390 microsegundos
+Tiempo promedio por insercion= 0.139 microsegundos.
+----------------------------------
+
+Para M=100000
+Tiempo total= 6269 microsegundos
+Tiempo promedio por insercion= 0.06269 microsegundos.
+----------------------------------
+======Experimento 2: Operaciones.
+
+Para O=100
+Tiempo total= 459 microsegundos
+Tiempo promedio por operacion= 4.59 microsegundos.
+Cantidad de inserciones=26, consulta tope=21, uniones=25, obtener tope=28.
+----------------------------------
+
+Para O=1000
+Tiempo total= 2580 microsegundos
+Tiempo promedio por operacion= 2.58 microsegundos.
+Cantidad de inserciones=265, consulta tope=252, uniones=235, obtener tope=248.
+----------------------------------
+
+Para O=10000
+Tiempo total= 25185 microsegundos
+Tiempo promedio por operacion= 2.5185 microsegundos.
+Cantidad de inserciones=2490, consulta tope=2464, uniones=2440, obtener tope=2606.
+----------------------------------
+
+Para O=100000
+Tiempo total= 262719 microsegundos
+Tiempo promedio por operacion= 2.62719 microsegundos.
+Cantidad de inserciones=25114, consulta tope=24733, uniones=25095, obtener tope=25058.
+----------------------------------
+======Experimento 3: Operaciones en secuencia.
+
+Para N=100
+Insercion: min=6microseg, max=6microseg, promedio=0.06microseg
+Consulta: min=0microseg, max=0microseg, promedio=0microseg
+Extraccion: min=0microseg, max=0microseg, promedio=0microseg
+Union: min=0microseg, max=0microseg, promedio=0microseg
+----------------------------------
+
+Para N=1000
+Insercion: min=68microseg, max=68microseg, promedio=0.068microseg
+Consulta: min=1microseg, max=1microseg, promedio=0.001microseg
+Extraccion: min=0microseg, max=0microseg, promedio=0microseg
+Union: min=0microseg, max=0microseg, promedio=0microseg
+----------------------------------
+
+Para N=10000
+Insercion: min=759microseg, max=759microseg, promedio=0.0759microseg
+Consulta: min=14microseg, max=14microseg, promedio=0.0014microseg
+Extraccion: min=4microseg, max=4microseg, promedio=0.0004microseg
+Union: min=9microseg, max=9microseg, promedio=0.0009microseg
+----------------------------------
+
+Para N=100000
+Insercion: min=7351microseg, max=7351microseg, promedio=0.07351microseg
+Consulta: min=154microseg, max=154microseg, promedio=0.00154microseg
+Extraccion: min=44microseg, max=44microseg, promedio=0.00044microseg
+Union: min=213microseg, max=213microseg, promedio=0.00213microseg
+----------------------------------

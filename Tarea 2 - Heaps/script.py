@@ -1,7 +1,7 @@
 import subprocess
 import os
 # Lista de archivos fuente .cpp
-cpp_files = ["binario.cpp", "binomial.cpp"] #"binomial.cpp", "fibonnachi.cpp"
+cpp_files = ["binario.cpp", "binomial.cpp", "fibonacci.cpp"] #"binomial.cpp", "fibonnachi.cpp"
 seeds = [123456789, 9876, 555]
 numeros = [100, 1000, 10000, 100000, -1]
 
@@ -13,7 +13,7 @@ for cpp_file in cpp_files:
     if result.returncode != 0:
         print(f"Error compilando {cpp_file}:\n{result.stderr.decode()}")
         
-cpp_executables = ["binario.exe", "binomial.exe"] #, "binomial.exe", "fibonnachi.exe"
+cpp_executables = ["binario.exe", "binomial.exe", "fibonacci.exe"] #, "binomial.exe", "fibonnachi.exe"
 
 entradas = [f"{seed} {' '.join(map(str, numeros))}\n" for seed in seeds]
 

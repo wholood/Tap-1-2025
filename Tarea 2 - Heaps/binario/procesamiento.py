@@ -149,7 +149,34 @@ def main():
             }
         avg_exp3[n] = ops_data
     averaged['experimento3'] = avg_exp3
-    
+    # Guardar datos procesados en archivo de texto
+    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "procesado.txt")
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write("=== Experimento 1 ===\n")
+        for m in sorted(averaged['experimento1'].keys()):
+            vals = averaged['experimento1'][m]
+            f.write(f"M={m}: Tiempo total promedio={vals['total']:.2f}, Tiempo promedio por inserción={vals['avg']:.4f}\n")
+        f.write("\n=== Experimento 2 ===\n")
+        for o in sorted(averaged['experimento2'].keys()):
+            vals = averaged['experimento2'][o]
+            f.write(
+                f"O={o}: Tiempo total promedio={vals['total']:.2f}, "
+                f"Tiempo promedio por operación={vals['avg']:.4f}, "
+                f"inserciones={vals['inserciones']:.2f}, "
+                f"consulta tope={vals['consulta']:.2f}, "
+                f"obtener tope={vals['obtener']:.2f}\n"
+            )
+        f.write("\n=== Experimento 3 ===\n")
+        for n in sorted(averaged['experimento3'].keys()):
+            f.write(f"N={n}:\n")
+            for op in ['insercion', 'consulta', 'extraccion', 'union']:
+                if op in averaged['experimento3'][n]:
+                    vals = averaged['experimento3'][n][op]
+                    f.write(
+                        f"  {op.capitalize()}: min={vals['min']:.2f}µs, "
+                        f"max={vals['max']:.2f}µs, promedio={vals['promedio']:.4f}µs\n"
+                    )
+            f.write("\n")
     # Plotting
     # Experimento 1
     exp1 = averaged['experimento1']
@@ -160,7 +187,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('M (log scale)')
     plt.ylabel('Tiempo promedio por inserción (µs)')
-    plt.title('Experimento 1: Tiempo promedio de inserción')
+    plt.title('Experimento 1: Tiempo promedio de inserción\n Heap Binario')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento1.png'))
@@ -175,7 +202,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('O (log scale)')
     plt.ylabel('Tiempo promedio por operación (µs)')
-    plt.title('Experimento 2: Tiempo promedio por operación')
+    plt.title('Experimento 2: Tiempo promedio por operación\n Heap Binario')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento2.png'))
@@ -193,7 +220,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('N (log scale)')
     plt.ylabel('Tiempo promedio (µs)')
-    plt.title('Experimento 3: Tiempo promedio por operación en secuencia')
+    plt.title('Experimento 3: Tiempo promedio por operación en secuencia\n Heap Binario')
     plt.legend()
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))

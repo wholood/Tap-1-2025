@@ -86,8 +86,8 @@ def parse_content(content):
     return experiments
 
 def main():
-    base_path = "C:/Users/ereis/OneDrive/Documentos/GitHub/Tap-1-2025/Tarea 2 - Heaps/binomial"
-    file_paths = [os.path.join(base_path, f"binomial{i}.txt") for i in range(1, 4)]
+    base_path = "C:/Users/ereis/OneDrive/Documentos/GitHub/Tap-1-2025/Tarea 2 - Heaps/fibonacci"
+    file_paths = [os.path.join(base_path, f"fibonacci{i}.txt") for i in range(1, 4)]
     all_data = []
     for path in file_paths:
         if not os.path.exists(path):
@@ -150,7 +150,6 @@ def main():
                 }
         avg_exp3[n] = ops_data
     averaged['experimento3'] = avg_exp3
-    
     # Guardar datos procesados en archivo de texto
     output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "procesado.txt")
     with open(output_path, "w", encoding="utf-8") as f:
@@ -179,7 +178,6 @@ def main():
                         f"max={vals['max']:.2f}µs, promedio={vals['promedio']:.4f}µs\n"
                     )
             f.write("\n")
-    
     # Plotting
     # Experimento 1
     exp1 = averaged['experimento1']
@@ -190,7 +188,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('M (log scale)')
     plt.ylabel('Tiempo promedio por inserción (µs)')
-    plt.title('Experimento 1: Tiempo promedio de inserción\n Heap Binomial')
+    plt.title('Experimento 1: Tiempo promedio de inserción\n Heap Fibonacci')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento1.png'))
@@ -205,7 +203,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('O (log scale)')
     plt.ylabel('Tiempo promedio por operación (µs)')
-    plt.title('Experimento 2: Tiempo promedio por operación\n Heap Binomial')
+    plt.title('Experimento 2: Tiempo promedio por operación\n Heap Fibonacci')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento2.png'))
@@ -223,7 +221,7 @@ def main():
     plt.xscale('log')
     plt.xlabel('N (log scale)')
     plt.ylabel('Tiempo promedio (µs)')
-    plt.title('Experimento 3: Tiempo promedio por operación en secuencia\n Heap Binomial')
+    plt.title('Experimento 3: Tiempo promedio por operación en secuencia\n Heap Fibonacci')
     plt.legend()
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))

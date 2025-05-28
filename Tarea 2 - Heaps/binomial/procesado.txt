@@ -1,0 +1,37 @@
+=== Experimento 1 ===
+M=100: Tiempo total promedio=90.33, Tiempo promedio por inserción=0.9033
+M=1000: Tiempo total promedio=944.67, Tiempo promedio por inserción=0.9447
+M=10000: Tiempo total promedio=9287.33, Tiempo promedio por inserción=0.9287
+M=100000: Tiempo total promedio=80834.33, Tiempo promedio por inserción=0.8083
+
+=== Experimento 2 ===
+O=100: Tiempo total promedio=1229.00, Tiempo promedio por operación=12.2900, inserciones=25.33, consulta tope=22.00, obtener tope=27.67
+O=1000: Tiempo total promedio=11712.67, Tiempo promedio por operación=11.7127, inserciones=254.00, consulta tope=245.67, obtener tope=255.33
+O=10000: Tiempo total promedio=115700.33, Tiempo promedio por operación=11.5700, inserciones=2484.67, consulta tope=2485.00, obtener tope=2543.00
+O=100000: Tiempo total promedio=1221997.67, Tiempo promedio por operación=12.2200, inserciones=25020.33, consulta tope=24921.00, obtener tope=25050.00
+
+=== Experimento 3 ===
+N=100:
+  Insercion: min=75.33µs, max=75.33µs, promedio=0.7533µs
+  Consulta: min=3.33µs, max=3.33µs, promedio=0.0333µs
+  Extraccion: min=0.00µs, max=0.00µs, promedio=0.0000µs
+  Union: min=130.00µs, max=130.00µs, promedio=1.3000µs
+
+N=1000:
+  Insercion: min=707.00µs, max=707.00µs, promedio=0.7070µs
+  Consulta: min=58.33µs, max=58.33µs, promedio=0.0583µs
+  Extraccion: min=0.00µs, max=0.00µs, promedio=0.0000µs
+  Union: min=1268.33µs, max=1268.33µs, promedio=1.2683µs
+
+N=10000:
+  Insercion: min=7244.33µs, max=7244.33µs, promedio=0.7244µs
+  Consulta: min=473.33µs, max=473.33µs, promedio=0.0473µs
+  Extraccion: min=4.33µs, max=4.33µs, promedio=0.0004µs
+  Union: min=15705.67µs, max=15705.67µs, promedio=1.5706µs
+
+N=100000:
+  Insercion: min=79399.00µs, max=79399.00µs, promedio=0.7940µs
+  Consulta: min=9313.33µs, max=9313.33µs, promedio=0.0931µs
+  Extraccion: min=42.00µs, max=42.00µs, promedio=0.0004µs
+  Union: min=170894.67µs, max=170894.67µs, promedio=1.7089µs
+
