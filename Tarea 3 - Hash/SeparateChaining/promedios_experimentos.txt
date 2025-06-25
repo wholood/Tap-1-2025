@@ -1,0 +1,31 @@
+--- PROMEDIOS DE RENDIMIENTO DE TABLAS HASH ---
+
+Resultados para M = 7, Operaciones = 10:
+  - Inserciones promedio: 6.33 microsegundos
+  - Busquedas promedio: 0.00 microsegundos
+  - Eliminaciones promedio: 1.33 microsegundos
+  - Tiempo total promedio: 129.33 microsegundos
+  - Tiempo promedio por operacion: 12.93 microsegundos
+
+Resultados para M = 7, Operaciones = 100:
+  - Inserciones promedio: 37.67 microsegundos
+  - Busquedas promedio: 0.00 microsegundos
+  - Eliminaciones promedio: 12.00 microsegundos
+  - Tiempo total promedio: 1110.00 microsegundos
+  - Tiempo promedio por operacion: 11.10 microsegundos
+
+Resultados para M = 10, Operaciones = 10:
+  - Inserciones promedio: 2.33 microsegundos
+  - Busquedas promedio: 0.00 microsegundos
+  - Eliminaciones promedio: 1.33 microsegundos
+  - Tiempo total promedio: 105.67 microsegundos
+  - Tiempo promedio por operacion: 10.57 microsegundos
+
+Resultados para M = 10, Operaciones = 100:
+  - Inserciones promedio: 26.67 microsegundos
+  - Busquedas promedio: 0.00 microsegundos
+  - Eliminaciones promedio: 13.00 microsegundos
+  - Tiempo total promedio: 1053.00 microsegundos
+  - Tiempo promedio por operacion: 10.53 microsegundos
+
+Procesamiento completado sobre las 3 ejecuciones por experimento.

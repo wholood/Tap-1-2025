@@ -3,7 +3,7 @@ import os
 # Lista de archivos fuente .cpp
 cpp_files = ["binario.cpp", "binomial.cpp", "fibonacci.cpp"] #"binomial.cpp", "fibonnachi.cpp"
 seeds = [123456789, 9876, 555]
-numeros = [100, 1000, 10000, 100000, -1]
+numeros = [100, 500, 1000, 5000, 10000, -1] #
 
 # Compila cada archivo .cpp en un ejecutable con el mismo nombre base
 for cpp_file in cpp_files:

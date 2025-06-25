@@ -195,6 +195,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento1.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
     
     # Experimento 2
     exp2 = averaged['experimento2']
@@ -210,6 +211,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento2.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
     
     # Experimento 3
     exp3 = averaged['experimento3']
@@ -229,6 +231,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento3.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
 
 if __name__ == '__main__':
     main()

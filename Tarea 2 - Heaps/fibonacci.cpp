@@ -226,7 +226,7 @@ void experimento2(unsigned seed, int O) {
                 break;
             case 2: m = obtenerMinimo(&heap); break;
             case 3: 
-                if (heap.tamano>0) {  // Verificar heap vacío correctamente
+                if (heap.tamano>0) {  
                     obtenerMinimo(&heap);
                 }
                 break;

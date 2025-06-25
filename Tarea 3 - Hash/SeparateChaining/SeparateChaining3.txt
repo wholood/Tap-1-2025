@@ -1,0 +1,102 @@
+====== Experimentos para M = 7 ======
+====== Operaciones = 10 ======
+
+Experimento: Uso dominado por inserciones (M inicial: 7) ======
+Cantidad de claves para insertar: 10
+    Inserciones (10 elementos): 2 microsegundos
+    Bsquedas (1 intentos, 1 encontrados): 0 microsegundos
+    Eliminaciones (0 intentos, 0 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por bsquedas (M inicial: 7) ======
+Cantidad de claves base: 10
+    Bsquedas (10 intentos, 5 encontrados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por eliminaciones (M inicial: 7) ======
+Cantidad de claves base: 10
+    Eliminaciones (10 intentos, 10 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso promedio (M inicial: 7) ======
+Nmero total de operaciones: 10
+    Tiempo total: 52 microsegundos
+    Tiempo promedio por operacion: 5.2 microsegundos
+    Desglose de operaciones: Inserciones=4, Bsquedas=1, Eliminaciones=0
+------------------------------------------------------------------
+====== Operaciones = 100 ======
+
+Experimento: Uso dominado por inserciones (M inicial: 7) ======
+Cantidad de claves para insertar: 100
+    Inserciones (100 elementos): 17 microsegundos
+    Bsquedas (10 intentos, 10 encontrados): 0 microsegundos
+    Eliminaciones (5 intentos, 5 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por bsquedas (M inicial: 7) ======
+Cantidad de claves base: 100
+    Bsquedas (100 intentos, 50 encontrados): 6 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por eliminaciones (M inicial: 7) ======
+Cantidad de claves base: 100
+    Eliminaciones (100 intentos, 100 eliminados): 5 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso promedio (M inicial: 7) ======
+Nmero total de operaciones: 100
+    Tiempo total: 629 microsegundos
+    Tiempo promedio por operacion: 6.29 microsegundos
+    Desglose de operaciones: Inserciones=29, Bsquedas=31, Eliminaciones=3
+------------------------------------------------------------------
+====== Experimentos para M = 10 ======
+====== Operaciones = 10 ======
+
+Experimento: Uso dominado por inserciones (M inicial: 10) ======
+Cantidad de claves para insertar: 10
+    Inserciones (10 elementos): 1 microsegundos
+    Bsquedas (1 intentos, 1 encontrados): 0 microsegundos
+    Eliminaciones (0 intentos, 0 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por bsquedas (M inicial: 10) ======
+Cantidad de claves base: 10
+    Bsquedas (10 intentos, 5 encontrados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por eliminaciones (M inicial: 10) ======
+Cantidad de claves base: 10
+    Eliminaciones (10 intentos, 10 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso promedio (M inicial: 10) ======
+Nmero total de operaciones: 10
+    Tiempo total: 53 microsegundos
+    Tiempo promedio por operacion: 5.3 microsegundos
+    Desglose de operaciones: Inserciones=4, Bsquedas=1, Eliminaciones=0
+------------------------------------------------------------------
+====== Operaciones = 100 ======
+
+Experimento: Uso dominado por inserciones (M inicial: 10) ======
+Cantidad de claves para insertar: 100
+    Inserciones (100 elementos): 14 microsegundos
+    Bsquedas (10 intentos, 10 encontrados): 0 microsegundos
+    Eliminaciones (5 intentos, 5 eliminados): 0 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por bsquedas (M inicial: 10) ======
+Cantidad de claves base: 100
+    Bsquedas (100 intentos, 50 encontrados): 5 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso dominado por eliminaciones (M inicial: 10) ======
+Cantidad de claves base: 100
+    Eliminaciones (100 intentos, 100 eliminados): 6 microsegundos
+------------------------------------------------------------------
+
+Experimento: Uso promedio (M inicial: 10) ======
+Nmero total de operaciones: 100
+    Tiempo total: 634 microsegundos
+    Tiempo promedio por operacion: 6.34 microsegundos
+    Desglose de operaciones: Inserciones=29, Bsquedas=31, Eliminaciones=3
+------------------------------------------------------------------

@@ -55,8 +55,8 @@ def parse_experiment3(block):
             ops = {
                 'Insercion': r'Insercion: min=(\d+)microseg, max=(\d+)microseg, promedio=([\d.]+)microseg',
                 'Consulta': r'Consulta: min=(\d+)microseg, max=(\d+)microseg, promedio=([\d.]+)microseg',
-                'Extraccion': r'Extraccion: min=(\d+)microseg, max=(\d+)microseg, promedio=([\d.]+)microseg'
-                # 'Union' is intentionally ignored
+                'Extraccion': r'Extraccion: min=(\d+)microseg, max=(\d+)microseg, promedio=([\d.]+)microseg',
+                'Union': r'Union: min=(\d+)microseg, max=(\d+)microseg, promedio=([\d.]+)microseg'
             }
             op_data = {}
             for op, pattern in ops.items():
@@ -138,17 +138,19 @@ def main():
     avg_exp3 = {}
     for n in ns:
         ops_data = {}
-        for op in ['insercion', 'consulta', 'extraccion']:
+        for op in ['insercion', 'consulta', 'extraccion', 'union']:
             mins = [file[n][op]['min'] for file in exp3_list if op in file[n]]
             maxs = [file[n][op]['max'] for file in exp3_list if op in file[n]]
             proms = [file[n][op]['promedio'] for file in exp3_list if op in file[n]]
-            ops_data[op] = {
-                'min': sum(mins)/3,
-                'max': sum(maxs)/3,
-                'promedio': sum(proms)/3
-            }
+            if mins and maxs and proms:
+                ops_data[op] = {
+                    'min': sum(mins)/len(mins),
+                    'max': sum(maxs)/len(maxs),
+                    'promedio': sum(proms)/len(proms)
+                }
         avg_exp3[n] = ops_data
     averaged['experimento3'] = avg_exp3
+    
     # Guardar datos procesados en archivo de texto
     output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "procesado.txt")
     with open(output_path, "w", encoding="utf-8") as f:
@@ -177,6 +179,7 @@ def main():
                         f"max={vals['max']:.2f}µs, promedio={vals['promedio']:.4f}µs\n"
                     )
             f.write("\n")
+    
     # Plotting
     # Experimento 1
     exp1 = averaged['experimento1']
@@ -187,11 +190,12 @@ def main():
     plt.xscale('log')
     plt.xlabel('M (log scale)')
     plt.ylabel('Tiempo promedio por inserción (µs)')
-    plt.title('Experimento 1: Tiempo promedio de inserción\n Heap Binario')
+    plt.title('Experimento 1: Tiempo promedio de inserción\n Heap binario')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento1.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
     
     # Experimento 2
     exp2 = averaged['experimento2']
@@ -202,17 +206,18 @@ def main():
     plt.xscale('log')
     plt.xlabel('O (log scale)')
     plt.ylabel('Tiempo promedio por operación (µs)')
-    plt.title('Experimento 2: Tiempo promedio por operación\n Heap Binario')
+    plt.title('Experimento 2: Tiempo promedio por operación\n Heap binario')
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento2.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
     
     # Experimento 3
     exp3 = averaged['experimento3']
     ns = sorted(exp3.keys())
-    ops = ['insercion', 'consulta', 'extraccion']
-    op_labels = ['Inserción', 'Consulta', 'Extracción']
+    ops = ['insercion', 'consulta', 'extraccion', 'union']
+    op_labels = ['Inserción', 'Consulta', 'Extracción', 'Unión']
     plt.figure(figsize=(10, 6))
     for op, label in zip(ops, op_labels):
         proms = [exp3[n][op]['promedio'] for n in ns]
@@ -220,12 +225,13 @@ def main():
     plt.xscale('log')
     plt.xlabel('N (log scale)')
     plt.ylabel('Tiempo promedio (µs)')
-    plt.title('Experimento 3: Tiempo promedio por operación en secuencia\n Heap Binario')
+    plt.title('Experimento 3: Tiempo promedio por operación en secuencia\n Heap binario')
     plt.legend()
     plt.grid(True)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'experimento3.png'))
     plt.close()
+    print(f"Gráfico guardado: {os.path.join(script_dir, 'experimento3.png')}")
 
 if __name__ == '__main__':
     main()

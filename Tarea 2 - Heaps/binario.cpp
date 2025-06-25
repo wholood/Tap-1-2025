@@ -63,9 +63,6 @@ void heapify(vector<Nodo>& heap, int tamaño) {
         hundir(heap, i, tamaño);
 }
 
-void unir(vector<Nodo>& heap1, int& tam1, const vector<Nodo>& heap2, int tam2) {
-    //No está definida
-}
 
 void generarheap(unsigned seed, int N, vector<Nodo>& heap) {
     vector<int> numeros;
@@ -78,6 +75,23 @@ void generarheap(unsigned seed, int N, vector<Nodo>& heap) {
     for (int num : numeros)
         insertar(heap, num, tam);
     
+}
+void unir(vector<Nodo>& heap1, int& tam1, const vector<Nodo>& heap2, int tam2) {
+    // Añadir todos los elementos de heap2 a heap1
+    for (int i = 0; i < tam2; ++i) {
+        if (tam1 >= heap1.size())
+            heap1.push_back(heap2[i]);
+        else
+            heap1[tam1] = heap2[i];
+        tam1++;
+    }
+    // Reajustar el heap resultante
+    vector<Nodo>().swap(const_cast<vector<Nodo>&>(heap2));
+    heapify(heap1, tam1);
+}
+void liberarHeap(vector<Nodo>& heap, int& tamaño) {
+    heap.clear();
+    tamaño = 0;
 }
 // Experimento 1: Rendimiento de inserciones
 void experimento1(unsigned seed, int M) {
@@ -103,13 +117,14 @@ void experimento1(unsigned seed, int M) {
          << "\nTiempo total= " << tiempo << " microsegundos\n"
          << "Tiempo promedio por insercion= " << (double)tiempo / M << " microsegundos.\n";
     cout << "----------------------------------\n";
+    liberarHeap(heap, tam); // Liberar memoria del heap
 }
 
 // Experimento 2: Mezcla de operaciones
 void experimento2(unsigned seed, int O) {
     vector<int> operaciones;
     mt19937 gen(seed);
-    uniform_int_distribution<int> dist_op(1, 3); // cambiar 1,4 para unión
+    uniform_int_distribution<int> dist_op(1, 4); // cambiar 1,4 para unión
 
     int ins = 0, cons = 0, ext = 0, uni=0;
     for (int i = 0; i < O; ++i) {
@@ -134,12 +149,14 @@ void experimento2(unsigned seed, int O) {
             case 1: insertar(heap, dist_num(gen_num), tam); break;
             case 2: m = obtenerMinimo(heap, tam); break;
             case 3: if (tam > 0) extraerMinimo(heap, tam); break;
-            /*case 4: {
+            case 4: {
                 vector<Nodo> heap2;
                 int tam2 = 0;
                 generarheap(seed, dist_num(gen_num), heap2);
                 unir(heap, tam, heap2, tam2);
-                break;*/
+                liberarHeap(heap2, tam2); // Liberar memoria del heap2
+                break;
+            }
         }
     }
     auto fin = high_resolution_clock::now();
@@ -151,9 +168,10 @@ void experimento2(unsigned seed, int O) {
          << "Tiempo promedio por operacion= " << (double)tiempo / O << " microsegundos.\n"
          << "Cantidad de inserciones=" << ins 
          << ", consulta tope=" << cons
-         //<< ", uniones=" << uni
+         << ", uniones=" << uni
          << ", obtener tope=" << ext << ".\n";
     cout << "----------------------------------\n";
+    liberarHeap(heap, tam); // Liberar memoria del heap
 }
 
 // Experimento 3: Secuencia completa
@@ -187,8 +205,17 @@ void experimento3(unsigned seed, int N) {
     tiempos[2].push_back(duration_cast<microseconds>(fin - inicio).count());
 
     // 
-    tiempos[3].push_back(9999);
-    
+    // Uniones
+    inicio = high_resolution_clock::now();
+    for (int i = 0; i < N; ++i) {
+        vector<Nodo> heap2;
+        int tam2 = 0;
+        insertar(heap2, dist(gen), tam2);
+        unir(heap, tam, heap2, tam2);
+    }
+    fin = high_resolution_clock::now();
+    tiempos[3].push_back(duration_cast<microseconds>(fin - inicio).count());
+    liberarHeap(heap, tam); // Liberar memoria del heap
 
     string tipos[4] = {"Insercion", "Consulta", "Extraccion", "Union"};
     cout << "\nPara N=" << N << endl;
