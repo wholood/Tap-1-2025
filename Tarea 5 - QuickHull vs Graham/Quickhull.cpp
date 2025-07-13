@@ -1,4 +1,4 @@
-#include "QuickHull.h" // Incluye el archivo de encabezado que acabamos de crear
+#include "Quickhull.h" // Incluye el archivo de encabezado que acabamos de crear
 
 // No necesitamos incluir <vector>, <algorithm>, <cmath> aquí de nuevo si QuickHull.h ya lo hace.
 // Pero si una función específica usa algo extra, podrías incluirlo.

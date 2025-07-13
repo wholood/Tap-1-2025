@@ -1,13 +1,16 @@
 #include <GL/freeglut.h>
 #include <vector>
-#include "QuickHull.h" 
-
+#include "Quickhull.h" 
+#include "Graham.h"
+#include "Point.h"
+using namespace std;
 
 // Vector para almacenar todos los puntos dibujados por el usuario
-std::vector<Point> user_points;
+vector<Point> user_points;
 
 // Vector para almacenar los puntos del Casco Convexo
-std::vector<Point> convex_hull_points;
+vector<Point> convex_hull_points;
+vector<Point> graham_points;
 
 // Variable para controlar si estamos en una nueva serie de puntos (después de un cambio de color o un nuevo dibujo)
 bool new_series_active = true; // Empieza true para permitir dibujar puntos rojos al inicio
@@ -42,6 +45,16 @@ void display() {
         }
         glEnd();
     }
+    if (graham_points.size() > 1) {
+        glColor3f(0.0f, 0.0f, 0.0f); // Color Gris para graham
+        glLineWidth(3.0f);           // Ancho de línea para el casco
+
+        glBegin(GL_LINE_LOOP); // Dibuja una secuencia de líneas conectadas que se cierra al final
+        for (const auto& p : graham_points) {
+            glVertex2i(p.x, p.y);
+        }
+        glEnd();
+    }
 
     glFlush(); // Asegura que los comandos de dibujo se ejecuten inmediatamente
 }
@@ -54,6 +67,7 @@ void mouse(int button, int state, int x, int y) {
             if (new_series_active) {
                 user_points.clear();
                 convex_hull_points.clear(); // Limpia también el casco anterior
+                graham_points.clear(); // Limpia también el casco de Graham
                 new_series_active = false;
             }
 
@@ -76,7 +90,11 @@ void mouse(int button, int state, int x, int y) {
             new_series_active = true; // La próxima izquierda iniciará una nueva serie
             glutPostRedisplay(); // Redibuja la ventana
         } else if (button == GLUT_MIDDLE_BUTTON) {
-            // Cambiar todos los puntos a verde
+            if (user_points.size() >= 3 ) {
+                graham_points = get_convex_hull_graham(user_points);
+            } else {
+                graham_points.clear(); // No hay hull si hay menos de 3 puntos
+            }
             for (auto& p : user_points) {
                 p.r = 0.0f;
                 p.g = 1.0f; // Verde
@@ -108,7 +126,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(win_width, win_height);
-    glutCreateWindow("Casco Convexo con QuickHull");
+    glutCreateWindow("Tarea 5 - QuickHull vs Graham Scan");
 
     glClearColor(1.0, 1.0, 1.0, 1.0); // Fondo blanco
 
