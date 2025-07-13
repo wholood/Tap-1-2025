@@ -1,0 +1,171 @@
+--- PROMEDIOS DE RENDIMIENTO DE TABLAS HASH ---
+
+Resultados para M = 10, Operaciones = 100:
+  - Inserciones promedio: 36.00 microsegundos
+  - Busquedas promedio: 7.33 microsegundos
+  - Eliminaciones promedio: 14.67 microsegundos
+  - Tiempo total promedio: 1094.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 10, Operaciones = 500:
+  - Inserciones promedio: 226.00 microsegundos
+  - Busquedas promedio: 41.33 microsegundos
+  - Eliminaciones promedio: 60.33 microsegundos
+  - Tiempo total promedio: 4975.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 10, Operaciones = 1000:
+  - Inserciones promedio: 361.33 microsegundos
+  - Busquedas promedio: 70.67 microsegundos
+  - Eliminaciones promedio: 118.33 microsegundos
+  - Tiempo total promedio: 8628.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 10, Operaciones = 5000:
+  - Inserciones promedio: 1237.67 microsegundos
+  - Busquedas promedio: 292.67 microsegundos
+  - Eliminaciones promedio: 507.67 microsegundos
+  - Tiempo total promedio: 34707.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 10, Operaciones = 10000:
+  - Inserciones promedio: 1802.67 microsegundos
+  - Busquedas promedio: 490.67 microsegundos
+  - Eliminaciones promedio: 899.00 microsegundos
+  - Tiempo total promedio: 65848.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 10, Operaciones = 50000:
+  - Inserciones promedio: 9564.67 microsegundos
+  - Busquedas promedio: 2962.00 microsegundos
+  - Eliminaciones promedio: 4443.33 microsegundos
+  - Tiempo total promedio: 319542.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 100:
+  - Inserciones promedio: 20.67 microsegundos
+  - Busquedas promedio: 5.00 microsegundos
+  - Eliminaciones promedio: 8.00 microsegundos
+  - Tiempo total promedio: 562.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 500:
+  - Inserciones promedio: 84.00 microsegundos
+  - Busquedas promedio: 28.00 microsegundos
+  - Eliminaciones promedio: 59.00 microsegundos
+  - Tiempo total promedio: 3088.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 1000:
+  - Inserciones promedio: 192.00 microsegundos
+  - Busquedas promedio: 52.33 microsegundos
+  - Eliminaciones promedio: 80.00 microsegundos
+  - Tiempo total promedio: 6237.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 5000:
+  - Inserciones promedio: 770.67 microsegundos
+  - Busquedas promedio: 203.67 microsegundos
+  - Eliminaciones promedio: 386.67 microsegundos
+  - Tiempo total promedio: 32034.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 10000:
+  - Inserciones promedio: 1778.67 microsegundos
+  - Busquedas promedio: 563.00 microsegundos
+  - Eliminaciones promedio: 781.00 microsegundos
+  - Tiempo total promedio: 63806.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 29, Operaciones = 50000:
+  - Inserciones promedio: 9199.00 microsegundos
+  - Busquedas promedio: 2766.00 microsegundos
+  - Eliminaciones promedio: 4591.33 microsegundos
+  - Tiempo total promedio: 319524.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 100:
+  - Inserciones promedio: 14.33 microsegundos
+  - Busquedas promedio: 4.00 microsegundos
+  - Eliminaciones promedio: 7.00 microsegundos
+  - Tiempo total promedio: 704.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 500:
+  - Inserciones promedio: 130.00 microsegundos
+  - Busquedas promedio: 22.33 microsegundos
+  - Eliminaciones promedio: 45.00 microsegundos
+  - Tiempo total promedio: 3108.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 1000:
+  - Inserciones promedio: 177.33 microsegundos
+  - Busquedas promedio: 55.00 microsegundos
+  - Eliminaciones promedio: 105.33 microsegundos
+  - Tiempo total promedio: 6314.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 5000:
+  - Inserciones promedio: 852.00 microsegundos
+  - Busquedas promedio: 273.33 microsegundos
+  - Eliminaciones promedio: 479.67 microsegundos
+  - Tiempo total promedio: 32610.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 10000:
+  - Inserciones promedio: 1998.33 microsegundos
+  - Busquedas promedio: 503.00 microsegundos
+  - Eliminaciones promedio: 924.33 microsegundos
+  - Tiempo total promedio: 64263.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 100, Operaciones = 50000:
+  - Inserciones promedio: 12813.67 microsegundos
+  - Busquedas promedio: 3036.00 microsegundos
+  - Eliminaciones promedio: 6198.67 microsegundos
+  - Tiempo total promedio: 337556.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 100:
+  - Inserciones promedio: 16.67 microsegundos
+  - Busquedas promedio: 4.33 microsegundos
+  - Eliminaciones promedio: 7.33 microsegundos
+  - Tiempo total promedio: 608.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 500:
+  - Inserciones promedio: 73.67 microsegundos
+  - Busquedas promedio: 21.33 microsegundos
+  - Eliminaciones promedio: 94.67 microsegundos
+  - Tiempo total promedio: 3134.33 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 1000:
+  - Inserciones promedio: 148.33 microsegundos
+  - Busquedas promedio: 41.67 microsegundos
+  - Eliminaciones promedio: 70.00 microsegundos
+  - Tiempo total promedio: 5958.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 5000:
+  - Inserciones promedio: 830.33 microsegundos
+  - Busquedas promedio: 257.33 microsegundos
+  - Eliminaciones promedio: 449.67 microsegundos
+  - Tiempo total promedio: 32911.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 10000:
+  - Inserciones promedio: 1899.00 microsegundos
+  - Busquedas promedio: 444.67 microsegundos
+  - Eliminaciones promedio: 844.00 microsegundos
+  - Tiempo total promedio: 65709.67 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Resultados para M = 1000, Operaciones = 50000:
+  - Inserciones promedio: 11597.33 microsegundos
+  - Busquedas promedio: 3590.67 microsegundos
+  - Eliminaciones promedio: 5216.67 microsegundos
+  - Tiempo total promedio: 332585.00 microsegundos
+  - Tiempo promedio por operacion: 0.00 microsegundos
+
+Procesamiento completado sobre las 3 ejecuciones por experimento.

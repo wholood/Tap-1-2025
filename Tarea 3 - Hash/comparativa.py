@@ -3,23 +3,6 @@ import re
 import matplotlib.pyplot as plt
 
 def parse_promedios_file(filepath):
-    """
-    Parsea un archivo promedios_experimentos.txt y extrae los datos.
-    Retorna un diccionario anidado:
-    {
-        M_value: {
-            operaciones_value: {
-                'Inserciones': float,
-                'Busquedas': float,
-                'Eliminaciones': float,
-                'Total_Promedio': float,
-                'Promedio_por_Op': float
-            },
-            ...
-        },
-        ...
-    }
-    """
     data = {}
     current_M = None
     current_Operaciones = None
@@ -68,10 +51,6 @@ def parse_promedios_file(filepath):
 
 
 def generate_comparison_graphs(data_by_implementation, output_dir='graficas_hash'):
-    """
-    Genera gráficas comparativas por cada M, mostrando el tiempo total promedio
-    y el tiempo promedio por operación para cada implementación.
-    """
     os.makedirs(output_dir, exist_ok=True)
 
     # Identificar todos los valores de M presentes en los datos
@@ -80,12 +59,13 @@ def generate_comparison_graphs(data_by_implementation, output_dir='graficas_hash
         for M_val in impl_data.keys()
     )))
 
-    # Colores para cada implementación (puedes ajustar estos)
     colors = {
         'DoubleHash': 'blue',
         'LinealProbing': 'red',
         'QuadraticHash': 'green',
-        'SeparateChaining': 'purple'
+        'SeparateChaining': 'purple',
+        'Map': 'orange',
+        'Set': 'cyan'
     }
 
     # Gráficas para Tiempo Total Promedio
@@ -96,11 +76,10 @@ def generate_comparison_graphs(data_by_implementation, output_dir='graficas_hash
                 # Obtener operaciones y tiempos para el M_val actual, ordenados por operaciones
                 ops = sorted(impl_data[M_val].keys())
                 total_promedio_times = [impl_data[M_val][op]['Total_Promedio'] for op in ops]
-                
+
                 plt.plot(ops, total_promedio_times,
                          marker='o', linestyle='-', label=f'{impl_name}', color=colors.get(impl_name, 'black'))
-        
-        plt.xscale('log') # Escala logarítmica para el número de operaciones
+        plt.xscale('log')
         plt.xlabel('Número de Operaciones', fontsize=12)
         plt.ylabel('Tiempo Total Promedio (µs)', fontsize=12)
         plt.title(f'Comparativa de Tiempo Total Promedio (M={M_val})', fontsize=14)
@@ -119,11 +98,10 @@ def generate_comparison_graphs(data_by_implementation, output_dir='graficas_hash
                 # Obtener operaciones y tiempos para el M_val actual, ordenados por operaciones
                 ops = sorted(impl_data[M_val].keys())
                 promedio_por_op_times = [impl_data[M_val][op]['Promedio_por_Op'] for op in ops]
-                
+
                 plt.plot(ops, promedio_por_op_times,
                          marker='o', linestyle='-', label=f'{impl_name}', color=colors.get(impl_name, 'black'))
-        
-        plt.xscale('log') # Escala logarítmica para el número de operaciones
+        plt.xscale('log')
         plt.xlabel('Número de Operaciones', fontsize=12)
         plt.ylabel('Tiempo Promedio por Operación (µs)', fontsize=12)
         plt.title(f'Comparativa de Tiempo Promedio por Operación (M={M_val})', fontsize=14)
@@ -141,6 +119,8 @@ if __name__ == "__main__":
         'LinealProbing': 'LinealProbing/promedios_experimentos.txt',
         'QuadraticHash': 'QuadraticHash/promedios_experimentos.txt',
         'SeparateChaining': 'SeparateChaining/promedios_experimentos.txt',
+        'Map': 'map/promedios_experimentos.txt',
+        'Set': 'set/promedios_experimentos.txt',
     }
 
     data_by_implementation = {}
@@ -148,12 +128,12 @@ if __name__ == "__main__":
         # Asegurarse de que la ruta sea relativa al script que se está ejecutando
         current_script_dir = os.path.dirname(os.path.abspath(__file__))
         full_filepath = os.path.join(current_script_dir, file_path_relative)
-        
+
         print(f"Intentando leer datos para {impl_name} desde: {full_filepath}")
-        
+
         # Parsear el archivo y almacenar los datos
         impl_data = parse_promedios_file(full_filepath)
-        if impl_data: # Solo si se lograron leer datos
+        if impl_data:
             data_by_implementation[impl_name] = impl_data
 
     if not data_by_implementation:

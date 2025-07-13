@@ -6,49 +6,39 @@
 #include <algorithm> 
 #include <numeric>   
 #include <string>   
-#include "Nodo.h" // Incluimos la estructura Nodo
+#include "Nodo.h"
 #define ull unsigned long long
 using namespace std;
 using namespace std::chrono;
 
-// Función hash simple para enteros (hashing modular)
+// Hash principal para enteros
 ull funcionHashEntero(int clave, ull M) {
     return clave % M;
 }
 
-
-// Función hash auxiliar para el segundo hash (paso)
-// Debe retornar un valor diferente de cero y menor que M
+// Segundo hash para el paso en doble hashing
 ull funcionHashPaso(int clave, ull M) {
-    // Una práctica común es usar R - (clave % R) donde R es un primo menor que M
-    // O (clave % (M-2)) + 1
-    // Asumiremos M es suficientemente grande para M-2
-    // Para asegurar que el paso sea siempre 1 o más, y menor que M.
-    // Usaremos un primo fijo para la segunda función si M no es primo.
-    // Aquí, usamos un enfoque simple que funciona para muchos casos.
-    if (M <= 1) return 1; // Caso degenerado
-    int paso = clave % (M - 1);
-    if (paso < 0) paso += (M - 1); // Asegurar positividad
-    return 1 + paso;
-
+    if (M <= 2) return 1;
+    return 1 + (clave % (M - 2));
 }
 
 class double_hash {
 private:
     vector<Nodo*> tabla;
-    ull M; // Tamaño de la tabla
-    ull N; // Número de elementos activos
+    ull M; 
+    ull N; 
 
-    // Ayudante para obtener el primer índice hash
+    // Primer hash
     ull obtenerHash1(int clave)  {
         return funcionHashEntero(clave, M);
     }
 
-    // Ayudante para obtener el segundo hash (tamaño del paso)
+    // Segundo hash (paso)
     ull obtenerHash2(int clave)  {
         return funcionHashPaso(clave, M);
     }
 
+    // Redimensiona la tabla hash y reubica los elementos activos
     void redimensionar(ull capacidad) {
         vector<Nodo*> tablaAntigua = tabla;
         ull M_antiguo = M;
@@ -60,8 +50,8 @@ private:
         for (ull i = 0; i < M_antiguo; ++i) {
             if (tablaAntigua[i] != nullptr && tablaAntigua[i]->estaActivo) {
                 insertar(tablaAntigua[i]->clave, tablaAntigua[i]->valor);
-                delete tablaAntigua[i];
-            } else if (tablaAntigua[i] != nullptr) {
+            }
+            if (tablaAntigua[i] != nullptr) {
                 delete tablaAntigua[i];
             }
         }
@@ -80,9 +70,10 @@ public:
         }
     }
 
+    // Inserta un par clave-valor usando doble hashing
     void insertar(int clave, int valor) {
-        if (N >= M / 2) { // Redimensionar cuando la tabla esté medio llena
-            redimensionar(2 * M);
+        if (N >= M / 2) { 
+            redimensionar(2 * M); // Redimensiona si la carga es alta
         }
 
         ull hashBase = obtenerHash1(clave);
@@ -90,84 +81,64 @@ public:
         ull i = 0;
         ull pos = hashBase;
 
-        // Sondear usando doble hashing
-        while (tabla[pos] != nullptr && tabla[pos]->estaActivo) {
-            if (tabla[pos]->clave == clave) { // Clave ya existe, actualizar
+        // Busca posición libre o actualiza si ya existe
+        while (tabla[pos] != nullptr && i < M) {
+            if (tabla[pos]->estaActivo && tabla[pos]->clave == clave) {
                 tabla[pos]->valor = valor;
                 return;
             }
             i++;
             pos = (hashBase + i * paso) % M;
-            if (i >= M) { // Evitar bucle infinito si la tabla está llena
-                redimensionar(2 * M);
-                insertar(clave, valor); // Reintentar la inserción
-                return;
-            }
         }
 
-        // Slot encontrado (vacío o inactivo)
         if (tabla[pos] != nullptr) {
             delete tabla[pos];
         }
         tabla[pos] = new Nodo(clave, valor);
+        tabla[pos]->estaActivo = true;
         N++;
     }
 
-     int* buscar(int clave)  {
+    // Busca una clave y retorna puntero al valor (o nullptr)
+    int* buscar(int clave)  {
         ull hashBase = obtenerHash1(clave);
         ull paso = obtenerHash2(clave);
         ull i = 0;
         ull pos = hashBase;
 
-        while (tabla[pos] != nullptr) {
+        // Recorre usando doble hashing hasta encontrar o agotar
+        while (tabla[pos] != nullptr && i < M) {
             if (tabla[pos]->estaActivo && tabla[pos]->clave == clave) {
                 return &tabla[pos]->valor;
             }
             i++;
             pos = (hashBase + i * paso) % M;
-            if (i >= M) break; // Traverso el ciclo completo o no encontró
         }
         return nullptr;
     }
 
+    // Marca como inactivo un elemento y redimensiona si es necesario
     bool eliminar(int clave) {
         ull hashBase = obtenerHash1(clave);
         ull paso = obtenerHash2(clave);
         ull i = 0;
         ull pos = hashBase;
 
-        while (tabla[pos] != nullptr) {
+        while (tabla[pos] != nullptr && i < M) {
             if (tabla[pos]->estaActivo && tabla[pos]->clave == clave) {
                 tabla[pos]->estaActivo = false;
                 N--;
 
-                // Re-hashear los elementos subsiguientes en el clúster
-                ull j = i + 1;
-                ull siguientePos = (hashBase + j * paso) % M;
-                while (tabla[siguientePos] != nullptr) {
-                    if (!tabla[siguientePos]->estaActivo) {
-                        j++;
-                        siguientePos = (hashBase + j * paso) % M;
-                        continue;
-                    }
-                    Nodo* nodoAReubicar = tabla[siguientePos];
-                    tabla[siguientePos] = nullptr;
-                    N--;
-                    insertar(nodoAReubicar->clave, nodoAReubicar->valor);
-                    delete nodoAReubicar;
-                    j++;
-                    siguientePos = (hashBase + j * paso) % M;
-                    if (j >= M) break;
-                }
-
-                if (N > 0 && N == M / 8) { // Redimensionar si está muy vacía
+                // Redimensiona si la carga es baja
+                if (N > 0 && M > 4 && N <= M / 8) { 
+                    redimensionar(M / 2);
+                } else if (N == 0 && M > 4) {
                     redimensionar(M / 2);
                 }
                 return true;
             }
             i++;
             pos = (hashBase + i * paso) % M;
-            if (i >= M) break;
         }
         return false;
     }
@@ -180,6 +151,7 @@ public:
         return M;
     }
 
+    // Imprime el estado de la tabla hash
     void imprimirTabla()  {
         cout << "--- Tabla Hash (Doble Hash) ---\n";
         for (ull i = 0; i < M; ++i) {
@@ -198,9 +170,7 @@ public:
     }
 };
 
-// --- Funciones auxiliares para generar datos (duplicadas para cada main) ---
-
-// Genera un vector de claves enteras unicas y aleatorias
+// Genera un vector de claves aleatorias
 vector<int> generarClaves(int cantidad, unsigned seed) {
     vector<int> claves(cantidad);
     iota(claves.begin(), claves.end(), 0);
@@ -208,13 +178,14 @@ vector<int> generarClaves(int cantidad, unsigned seed) {
     return claves;
 }
 
-// Genera un numero entero aleatorio dentro de un rango
+// Genera un número aleatorio en un rango
 int generarNumeroAleatorio_main(unsigned seed, int minVal, int maxVal) {
     mt19937 gen(seed);
     uniform_int_distribution<int> dist(minVal, maxVal);
     return dist(gen);
 }
 
+// Ejecuta un experimento de inserción, búsqueda y eliminación, midiendo tiempos
 void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<int>& claves_busqueda, vector<int>& claves_eliminacion) {
     
     double_hash ht(M_inicial);
@@ -227,7 +198,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     int elementos_encontrados = 0;
     int elementos_eliminados = 0;
 
-    // --- Inserciones ---
+    // Inserciones
     auto inicio_insercion = high_resolution_clock::now();
     for (int clave : claves_insercion) {
         ht.insertar(clave, clave * 10);
@@ -236,10 +207,10 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     auto fin_insercion = high_resolution_clock::now();
     tiempo_total_insercion = duration_cast<microseconds>(fin_insercion - inicio_insercion).count();
 
-    // --- Busquedas ---
+    // Búsquedas
     auto inicio_busqueda = high_resolution_clock::now();
     for (int clave : claves_busqueda) {
-        int* valor = ht.buscar(clave); 
+        int* valor = ht.buscar(clave);
         if (valor != nullptr) {
             elementos_encontrados++;
         }
@@ -247,7 +218,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     auto fin_busqueda = high_resolution_clock::now();
     tiempo_total_busqueda = duration_cast<microseconds>(fin_busqueda - inicio_busqueda).count();
 
-    // --- Eliminaciones ---
+    // Eliminaciones
     auto inicio_eliminacion = high_resolution_clock::now();
     for (int clave : claves_eliminacion) {
         bool eliminado = ht.eliminar(clave);
@@ -263,8 +234,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     cout << "    Eliminaciones (" << claves_eliminacion.size() << " intentos, " << elementos_eliminados << " eliminados): " << tiempo_total_eliminacion << " microsegundos\n";
 }
 
-
-// Experimento: Uso dominado por inserciones
+// Experimento dominado por inserciones
 void experimento1(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento Uso dominado por inserciones (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves para insertar: " << num_claves << "\n";
@@ -279,7 +249,7 @@ void experimento1(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso dominado por busquedas
+// Experimento dominado por búsquedas
 void experimento2(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento Uso dominado por busquedas (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves base: " << num_claves << "\n";
@@ -288,14 +258,13 @@ void experimento2(unsigned seed, int num_claves, ull M_inicial) {
     vector<int> claves_insercion_inicial(claves_base.begin(), claves_base.begin() + num_claves / 2);
     vector<int> claves_busqueda = generarClaves(num_claves, seed + 1);
     
-    // Para este experimento, primero debemos insertar las claves iniciales
-    // para que haya algo que buscar.
     double_hash ht(M_inicial);
     for(int clave : claves_insercion_inicial) ht.insertar(clave, clave * 10);
     
     long long tiempo_total_busqueda = 0;
     int elementos_encontrados = 0;
 
+    // Solo mide búsquedas
     auto inicio_busqueda = high_resolution_clock::now();
     for (int clave : claves_busqueda) {
         int* valor = ht.buscar(clave); 
@@ -310,7 +279,7 @@ void experimento2(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso dominado por eliminaciones
+// Experimento dominado por eliminaciones
 void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento Uso dominado por eliminaciones (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves base: " << num_claves << "\n";
@@ -319,13 +288,13 @@ void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     vector<int> claves_insercion_inicial = claves_base;
     vector<int> claves_eliminacion = claves_base;
 
-    // Primero insertamos, luego medimos solo las eliminaciones
     double_hash ht(M_inicial);
     for(int clave : claves_insercion_inicial) ht.insertar(clave, clave * 10);
 
     long long tiempo_total_eliminacion = 0;
     int elementos_eliminados = 0;
 
+    // Solo mide eliminaciones
     auto inicio_eliminacion = high_resolution_clock::now();
     for (int clave : claves_eliminacion) {
         bool eliminado = ht.eliminar(clave);
@@ -340,7 +309,7 @@ void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso promedio (mezcla balanceada de operaciones)
+// Experimento con operaciones aleatorias (inserción, búsqueda, eliminación)
 void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     cout << "\nExperimento Uso promedio (M inicial: " << M_inicial << ") ======\n";
     cout << "Numero total de operaciones: " << num_operaciones_totales << "\n";
@@ -349,30 +318,34 @@ void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     
     double_hash ht(M_inicial);
     mt19937 gen_op(seed + 2);
-    uniform_int_distribution<int> dist_op(1, 3); // 1: insertar, 2: buscar, 3: eliminar
+    uniform_int_distribution<int> dist_op(1, 3);
 
     long long tiempo_total = 0;
     int idx_claves_insertadas = 0;
     int count_inserciones = 0, count_busquedas = 0, count_eliminaciones = 0;
 
+    // Mezcla operaciones aleatoriamente
     auto inicio = high_resolution_clock::now();
     for (int i = 0; i < num_operaciones_totales; ++i) {
         int op_tipo = dist_op(gen_op);
         int clave_operar;
 
-        if (op_tipo == 1) { // Insertar
+        if (op_tipo == 1) {
+            // Inserción
             if (idx_claves_insertadas < claves_disponibles.size()) {
                 clave_operar = claves_disponibles[idx_claves_insertadas++];
                 ht.insertar(clave_operar, clave_operar * 10);
                 count_inserciones++;
             }
-        } else if (op_tipo == 2) { // Buscar
+        } else if (op_tipo == 2) {
+            // Búsqueda
             if (!claves_disponibles.empty()) {
                 clave_operar = claves_disponibles[generarNumeroAleatorio_main(seed + i, 0, claves_disponibles.size() - 1)];
                 ht.buscar(clave_operar);
                 count_busquedas++;
             }
-        } else { // Eliminar (op_tipo == 3)
+        } else {
+            // Eliminación
              if (!claves_disponibles.empty()) {
                 clave_operar = claves_disponibles[generarNumeroAleatorio_main(seed + i, 0, claves_disponibles.size() - 1)];
                 bool eliminado = ht.eliminar(clave_operar);
@@ -391,14 +364,13 @@ void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-
-// --- Funcian principal del programa ---
 int main() {
     unsigned seed;
     cin >> seed;
 
     vector<int> valores_M;
     int m_val;
+    // Lee valores de M hasta -1
     while (cin >> m_val && m_val != -1) {
         valores_M.push_back(m_val);
     }
@@ -407,9 +379,9 @@ int main() {
         valores_M = {7, 17, 29, 53};
     }
 
-    
     vector<int> valores_op;
     int op_val;
+    // Lee valores de operaciones hasta -1
     while (cin >> op_val && op_val != -1) {
         valores_op.push_back(op_val);
     }
@@ -418,7 +390,7 @@ int main() {
         valores_op = {100, 1000};
     }
 
-    // Ejecutar los experimentos para cada valor de M
+    // Ejecuta todos los experimentos para cada combinación de M y operaciones
     for (ull M_actual : valores_M) {
         cout << "====== Experimentos para M = " << M_actual << " ======\n";
         for(ull num_op : valores_op) {

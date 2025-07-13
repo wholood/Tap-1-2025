@@ -11,6 +11,8 @@
         "xhash": "cpp",
         "xlocinfo": "cpp",
         "xstring": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "iomanip": "cpp",
+        "utility": "cpp"
     }
 }

@@ -6,65 +6,70 @@
 #include <algorithm> 
 #include <numeric>   
 #include <string>   
-#include "Nodo.h" // Incluimos la estructura Nodo
+#include "Nodo.h"
 #define ull unsigned long long
 using namespace std;
 using namespace std::chrono;
 
+// Función hash simple para enteros
 ull funcionHashEntero(int clave, ull M) {
     return clave % M;
 }
 
 class separate_chaining {
 private:
-    vector<list<Nodo>> tabla;
-    ull M; // Tamaño de la tabla
-    ull N; // Nmero de elementos actuales
+    vector<list<Nodo>> tabla; // Vector de listas para el encadenamiento separado
+    ull M; // Capacidad de la tabla hash
+    ull N; // Número de elementos almacenados
 
-    // Obtener el indice hash
+    // Calcula el índice hash para una clave
     ull obtenerHash(int clave) {
         return funcionHashEntero(clave, M);
     }
 
 public:
+    // Constructor: inicializa la tabla con M listas vacías
     separate_chaining(ull tamanoInicialM) : M(tamanoInicialM), N(0) {
         tabla.resize(M);
     }
 
+    // Inserta un par clave-valor en la tabla hash
     void insertar(int clave, int valor) {
         ull indice = obtenerHash(clave);
-        // Buscar si la clave ya existe para actualizar el valor
+        // Busca si la clave ya existe y actualiza el valor si es así
         for (auto& nodo : tabla[indice]) {
             if (nodo.clave == clave) {
                 nodo.valor = valor;
                 return;
             }
         }
-        // Si no existe, añadir un nuevo nodo al final de la lista
+        // Si la clave no existe, la agrega al final de la lista
         tabla[indice].emplace_back(clave, valor);
         N++;
     }
 
+    // Busca una clave y retorna un puntero a su valor, o nullptr si no existe
     int* buscar(int clave) {
         ull indice = obtenerHash(clave);
         for (auto& nodo : tabla[indice]) {
             if (nodo.clave == clave) {
-                return &nodo.valor; // Retorna un puntero al valor encontrado
+                return &nodo.valor;
             }
         }
-        return nullptr; // Clave no encontrada
+        return nullptr;
     }
 
+    // Elimina una clave de la tabla hash, retorna true si se eliminó
     bool eliminar(int clave) {
         ull indice = obtenerHash(clave);
         for (auto it = tabla[indice].begin(); it != tabla[indice].end(); ++it) {
             if (it->clave == clave) {
-                tabla[indice].erase(it); // Eliminar el nodo de la lista
+                tabla[indice].erase(it);
                 N--;
-                return true; // Eliminado con éxito
+                return true;
             }
         }
-        return false; // Clave no encontrada
+        return false;
     }
 
     ull obtenerTamano() {
@@ -75,6 +80,7 @@ public:
         return M;
     }
 
+    // Imprime el contenido de la tabla hash
     void imprimirTabla() {
         cout << "--- Tabla Hash (Encadenamiento Separado) ---\n";
         for (ull i = 0; i < M; ++i) {
@@ -88,9 +94,7 @@ public:
     }
 };
 
-// --- Funciones auxiliares para generar datos (duplicadas para cada main) ---
-
-// Genera un vector de claves enteras nicas y aleatorias
+// Genera un vector de claves aleatorias (permuta los enteros de 0 a cantidad-1)
 vector<int> generarClaves(int cantidad, unsigned seed) {
     vector<int> claves(cantidad);
     iota(claves.begin(), claves.end(), 0);
@@ -98,13 +102,14 @@ vector<int> generarClaves(int cantidad, unsigned seed) {
     return claves;
 }
 
-// Genera un nmero entero aleatorio dentro de un rango
+// Genera un número aleatorio entre minVal y maxVal usando una semilla
 int generarNumeroAleatorio_main(unsigned seed, int minVal, int maxVal) {
     mt19937 gen(seed);
     uniform_int_distribution<int> dist(minVal, maxVal);
     return dist(gen);
 }
 
+// Ejecuta un experimento de inserción, búsqueda y eliminación, midiendo tiempos
 void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<int>& claves_busqueda, vector<int>& claves_eliminacion) {
     
     separate_chaining ht(M_inicial);
@@ -117,7 +122,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     int elementos_encontrados = 0;
     int elementos_eliminados = 0;
 
-    // --- Inserciones ---
+    // Medición de tiempo de inserción
     auto inicio_insercion = high_resolution_clock::now();
     for (int clave : claves_insercion) {
         ht.insertar(clave, clave * 10);
@@ -126,7 +131,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     auto fin_insercion = high_resolution_clock::now();
     tiempo_total_insercion = duration_cast<microseconds>(fin_insercion - inicio_insercion).count();
 
-    // --- Bsquedas ---
+    // Medición de tiempo de búsqueda
     auto inicio_busqueda = high_resolution_clock::now();
     for (int clave : claves_busqueda) {
         int* valor = ht.buscar(clave);
@@ -137,7 +142,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     auto fin_busqueda = high_resolution_clock::now();
     tiempo_total_busqueda = duration_cast<microseconds>(fin_busqueda - inicio_busqueda).count();
 
-    // --- Eliminaciones ---
+    // Medición de tiempo de eliminación
     auto inicio_eliminacion = high_resolution_clock::now();
     for (int clave : claves_eliminacion) {
         bool eliminado = ht.eliminar(clave);
@@ -153,8 +158,7 @@ void ejecutar_experimento(ull M_inicial, vector<int>& claves_insercion, vector<i
     cout << "    Eliminaciones (" << claves_eliminacion.size() << " intentos, " << elementos_eliminados << " eliminados): " << tiempo_total_eliminacion << " microsegundos\n";
 }
 
-
-// Experimento: Uso dominado por inserciones
+// Experimento dominado por inserciones
 void experimento1(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento: Uso dominado por inserciones (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves para insertar: " << num_claves << "\n";
@@ -162,6 +166,7 @@ void experimento1(unsigned seed, int num_claves, ull M_inicial) {
     vector<int> claves_base = generarClaves(num_claves, seed);
     
     vector<int> claves_insercion = claves_base;
+    // Solo se buscan y eliminan subconjuntos de las claves insertadas
     vector<int> claves_busqueda(claves_base.begin(), claves_base.begin() + num_claves / 10);
     vector<int> claves_eliminacion(claves_base.begin(), claves_base.begin() + num_claves / 20);
 
@@ -169,23 +174,23 @@ void experimento1(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso dominado por bsquedas
+// Experimento dominado por búsquedas
 void experimento2(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento: Uso dominado por bsquedas (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves base: " << num_claves << "\n";
 
     vector<int> claves_base = generarClaves(num_claves, seed);
+    // Solo la mitad de las claves se insertan, pero se buscan todas
     vector<int> claves_insercion_inicial(claves_base.begin(), claves_base.begin() + num_claves / 2);
     vector<int> claves_busqueda = generarClaves(num_claves, seed + 1);
     
-    // Para este experimento, primero debemos insertar las claves iniciales
-    // para que haya algo que buscar.
     separate_chaining ht(M_inicial);
     for(int clave : claves_insercion_inicial) ht.insertar(clave, clave * 10);
     
     long long tiempo_total_busqueda = 0;
     int elementos_encontrados = 0;
 
+    // Medición de tiempo de búsqueda
     auto inicio_busqueda = high_resolution_clock::now();
     for (int clave : claves_busqueda) {
         int* valor = ht.buscar(clave);
@@ -200,7 +205,7 @@ void experimento2(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso dominado por eliminaciones
+// Experimento dominado por eliminaciones
 void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     cout << "\nExperimento: Uso dominado por eliminaciones (M inicial: " << M_inicial << ") ======\n";
     cout << "Cantidad de claves base: " << num_claves << "\n";
@@ -209,13 +214,13 @@ void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     vector<int> claves_insercion_inicial = claves_base;
     vector<int> claves_eliminacion = claves_base;
 
-    // Primero insertamos, luego medimos solo las eliminaciones
     separate_chaining ht(M_inicial);
     for(int clave : claves_insercion_inicial) ht.insertar(clave, clave * 10);
 
     long long tiempo_total_eliminacion = 0;
     int elementos_eliminados = 0;
 
+    // Medición de tiempo de eliminación
     auto inicio_eliminacion = high_resolution_clock::now();
     for (int clave : claves_eliminacion) {
         bool eliminado = ht.eliminar(clave);
@@ -230,11 +235,12 @@ void experimento3(unsigned seed, int num_claves, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-// Experimento: Uso promedio (mezcla balanceada de operaciones)
+// Experimento con operaciones mezcladas (inserción, búsqueda, eliminación)
 void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     cout << "\nExperimento: Uso promedio (M inicial: " << M_inicial << ") ======\n";
     cout << "Nmero total de operaciones: " << num_operaciones_totales << "\n";
 
+    // Se generan el doble de claves para asegurar variedad en las operaciones
     vector<int> claves_disponibles = generarClaves(num_operaciones_totales * 2, seed);
     
     separate_chaining ht(M_inicial);
@@ -245,24 +251,25 @@ void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     int idx_claves_insertadas = 0;
     int count_inserciones = 0, count_busquedas = 0, count_eliminaciones = 0;
 
+    // Se mezclan operaciones aleatoriamente
     auto inicio = high_resolution_clock::now();
     for (int i = 0; i < num_operaciones_totales; ++i) {
         int op_tipo = dist_op(gen_op);
         int clave_operar;
 
-        if (op_tipo == 1) { // Insertar
+        if (op_tipo == 1) { // Inserción
             if (idx_claves_insertadas < claves_disponibles.size()) {
                 clave_operar = claves_disponibles[idx_claves_insertadas++];
                 ht.insertar(clave_operar, clave_operar * 10);
                 count_inserciones++;
             }
-        } else if (op_tipo == 2) { // Buscar
+        } else if (op_tipo == 2) { // Búsqueda
             if (!claves_disponibles.empty()) {
                 clave_operar = claves_disponibles[generarNumeroAleatorio_main(seed + i, 0, claves_disponibles.size() - 1)];
                 ht.buscar(clave_operar);
                 count_busquedas++;
             }
-        } else { // Eliminar (op_tipo == 3)
+        } else { // Eliminación
              if (!claves_disponibles.empty()) {
                 clave_operar = claves_disponibles[generarNumeroAleatorio_main(seed + i, 0, claves_disponibles.size() - 1)];
                 bool eliminado = ht.eliminar(clave_operar);
@@ -281,14 +288,13 @@ void experimento4(unsigned seed, int num_operaciones_totales, ull M_inicial) {
     cout << "------------------------------------------------------------------\n";
 }
 
-
-// --- Funcion principal del programa ---
 int main() {
     unsigned seed;
     cin >> seed;
 
     vector<int> valores_M;
     int m_val;
+    // Lee valores de M hasta que se ingrese -1
     while (cin >> m_val && m_val != -1) {
         valores_M.push_back(m_val);
     }
@@ -297,9 +303,9 @@ int main() {
         valores_M = {7, 17, 29, 53};
     }
 
-    
     vector<int> valores_op;
     int op_val;
+    // Lee valores de número de operaciones hasta que se ingrese -1
     while (cin >> op_val && op_val != -1) {
         valores_op.push_back(op_val);
     }
@@ -308,7 +314,7 @@ int main() {
         valores_op = {100, 1000};
     }
 
-    // Ejecutar los experimentos para cada valor de M
+    // Ejecuta todos los experimentos para cada combinación de M y número de operaciones
     for (ull M_actual : valores_M) {
         cout << "====== Experimentos para M = " << M_actual << " ======\n";
         for(ull num_op : valores_op) {

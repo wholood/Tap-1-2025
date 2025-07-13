@@ -3,28 +3,10 @@ import re
 import numpy as np
 
 def parse_file(filepath):
-    """
-    Parsea un archivo de salida de experimento de tabla hash y extrae los tiempos.
-    Asume el formato de salida proporcionado (LinealProbing1.txt, LinealProbing2.txt, LinealProbing3.txt).
-    Retorna un diccionario anidado:
-    {
-        (M, num_operaciones): {
-            'inserciones': [tiempo1, tiempo2, ...],
-            'busquedas': [tiempo1, tiempo2, ...],
-            'eliminaciones': [tiempo1, tiempo2, ...],
-            'promedio_total': [tiempo1, tiempo2, ...],
-            'promedio_por_op': [tiempo1, tiempo2, ...]
-        },
-        ...
-    }
-    """
     data = {}
     
     with open(filepath, 'r') as f:
         content = f.read()
-
-    # Dividir el contenido por los delimitadores principales de M y Operaciones
-    # Buscamos "====== Experimentos para M = X ======" o "====== Operaciones = Y ======"
     sections = re.split(r'(====== Experimentos para M = \d+ ======|====== Operaciones = \d+ ======)', content)
     
     current_M = None
@@ -41,7 +23,7 @@ def parse_file(filepath):
         ops_match = re.search(r'====== Operaciones = (\d+) ======', section_header)
         if ops_match:
             current_ops = int(ops_match.group(1))
-            # Inicializa la entrada para esta combinación (M, num_operaciones) si no existe
+            # Inicializa la entrada para esta combinacin (M, num_operaciones) si no existe
             if (current_M, current_ops) not in data:
                 data[(current_M, current_ops)] = {
                     'inserciones': [],
@@ -52,40 +34,31 @@ def parse_file(filepath):
                 }
             continue # Pasa al siguiente segmento que contendrá los experimentos
 
-        # El cuerpo de la sección que contiene los resultados de los experimentos
+        # El cuerpo de la seccin que contiene los resultados de los experimentos
         section_body = sections[i]
 
-        # --- CORRECCIONES EN LAS REGEX ---
-        # Eliminado el `(?: )` y ajustado para que coincida exactamente con "Experimento Uso"
-        # Corregido 'operacion' a 'operacian'
-        
-        # Experimento Uso dominado por inserciones
         insert_match = re.search(r'Experimento Uso dominado por inserciones \(M inicial: \d+\) ======\n.+?Inserciones \(\d+ elementos\): (\d+) microsegundos', section_body, re.DOTALL)
         if insert_match:
             if current_M is not None and current_ops is not None:
                 data[(current_M, current_ops)]['inserciones'].append(int(insert_match.group(1)))
 
-        # Experimento Uso dominado por busquedas
-        # Ajustada la regex para 'busquedas' también
         search_match = re.search(r'Experimento Uso dominado por b(u|u)squedas \(M inicial: \d+\) ======\n.+?B(u|u)squedas \(\d+ intentos, \d+ encontrados\): (\d+) microsegundos', section_body, re.DOTALL)
         if search_match:
             if current_M is not None and current_ops is not None:
                 data[(current_M, current_ops)]['busquedas'].append(int(search_match.group(3)))
 
-        # Experimento Uso dominado por eliminaciones
+        
         delete_match = re.search(r'Experimento Uso dominado por eliminaciones \(M inicial: \d+\) ======\n.+?Eliminaciones \(\d+ intentos, \d+ eliminados\): (\d+) microsegundos', section_body, re.DOTALL)
         if delete_match:
             if current_M is not None and current_ops is not None:
                 data[(current_M, current_ops)]['eliminaciones'].append(int(delete_match.group(1)))
-
-        # Experimento Uso promedio (Tiempo total)
+#
         avg_total_match = re.search(r'Experimento Uso promedio \(M inicial: \d+\) ======\n.+?Tiempo total: (\d+) microsegundos', section_body, re.DOTALL)
         if avg_total_match:
             if current_M is not None and current_ops is not None:
                 data[(current_M, current_ops)]['promedio_total'].append(int(avg_total_match.group(1)))
         
-        # Experimento: Uso promedio (Tiempo promedio por operación)
-        # Corregido de 'operaci(o|ó)n' a 'operacian' y removido el (?: )
+        
         avg_per_op_match = re.search(r'Tiempo promedio por operacian: ([\d.]+) microsegundos', section_body, re.DOTALL)
         if avg_per_op_match:
             if current_M is not None and current_ops is not None:
@@ -95,20 +68,6 @@ def parse_file(filepath):
 
 
 def calculate_averages(all_files_data):
-    """
-    Calcula los promedios de los tiempos de los experimentos a partir de los datos de multiples archivos.
-    Retorna un diccionario:
-    {
-        (M, num_operaciones): {
-            'inserciones_avg': promedio_tiempo,
-            'busquedas_avg': promedio_tiempo,
-            'eliminaciones_avg': promedio_tiempo,
-            'promedio_total_avg': promedio_tiempo,
-            'promedio_por_op_avg': promedio_tiempo
-        },
-        ...
-    }
-    """
     averaged_data = {}
     
     # Recopilar todas las claves (M, num_operaciones) unicas de todos los archivos
@@ -119,10 +78,10 @@ def calculate_averages(all_files_data):
     # Iterar sobre cada clave unica y calcular promedios
     valid_keys = [k for k in unique_keys if all(x is not None for x in k)]
     
-    for key in sorted(list(valid_keys)): # Ordenar para una salida consistente
+    for key in sorted(list(valid_keys)): 
         M, num_ops = key
         
-        # Recopilar todos los tiempos para esta clave y tipo de experimento
+       
         all_insertions = []
         all_busquedas = []
         all_eliminaciones = []
@@ -137,7 +96,7 @@ def calculate_averages(all_files_data):
                 all_promedio_total.extend(file_data[key]['promedio_total'])
                 all_promedio_por_op.extend(file_data[key]['promedio_por_op'])
         
-        # Calcular los promedios, evitando la división por cero
+        # Calcular los promedios, evitando la divisin por cero
         avg_inserciones = np.mean(all_insertions) if all_insertions else 0
         avg_busquedas = np.mean(all_busquedas) if all_busquedas else 0
         avg_eliminaciones = np.mean(all_eliminaciones) if all_eliminaciones else 0
@@ -156,13 +115,10 @@ def calculate_averages(all_files_data):
 
 
 def write_averages_to_file(averaged_data, output_filepath):
-    """
-    Escribe los promedios calculados en un archivo de texto en formato de lista.
-    """
     with open(output_filepath, 'w') as f:
         f.write("--- PROMEDIOS DE RENDIMIENTO DE TABLAS HASH ---\n\n")
         
-        # Ordenar las claves para una salida consistente
+        
         for (M, ops) in sorted(averaged_data.keys()):
             data = averaged_data[(M, ops)]
             f.write(f"Resultados para M = {M}, Operaciones = {ops}:\n")
@@ -175,27 +131,26 @@ def write_averages_to_file(averaged_data, output_filepath):
         f.write("Procesamiento completado sobre las 3 ejecuciones por experimento.\n")
 
 
-if __name__ == "__main__":
-    # DIRECTORIO DE ENTRADA:
-    # Por defecto, el script buscará los archivos .txt en el mismo directorio
-    # desde donde se ejecuta. Si tus archivos .txt están en una subcarpeta
-    # (ej., 'resultados_doble_hash/'), especifica la ruta aquí.
-    input_directory = './' # O, por ejemplo, './LinealProbing/' si solo procesas esa carpeta.
 
-    # NOMBRE DEL ARCHIVO DE SALIDA:
+
+if __name__ == "__main__":
+   
+    input_directory = './' 
+
+  
     output_filename = 'promedios_experimentos.txt'
     output_filepath = os.path.join(input_directory, output_filename)
 
     print(f"Buscando archivos .txt en: {os.path.abspath(input_directory)}")
     
-    # Define explícitamente los archivos a procesar
+   
     txt_files_to_process = ['LinealProbing1.txt', 'LinealProbing2.txt', 'LinealProbing3.txt']
     
-    # Filtrar solo los archivos que existen en el input_directory
+   
     txt_files = [f for f in txt_files_to_process if os.path.isfile(os.path.join(input_directory, f))]
     
     if not txt_files:
-        print(f"No se encontraron los archivos especificados ({', '.join(txt_files_to_process)}) en '{input_directory}'. Asegurate de que los archivos estén ahí.")
+        print(f"No se encontraron los archivos especificados ({', '.join(txt_files_to_process)}) en '{input_directory}'. Asegurate de que los archivos estén ahi.")
         exit()
 
     all_data_from_files = []
